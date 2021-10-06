@@ -59,6 +59,32 @@ namespace DeictraGraph.Dijkstra
             return FindShortestPath(_graph.FindVertex(startName), _graph.FindVertex(finishName));
         }
 
+        public int GetPathSum(string path)
+        {
+            int totalSum = 0;
+            
+            for (int i = 0; i < path.Length - 1; i++)
+            {
+                totalSum += GetSumOfTwoEdges($"{path[i]}", $"{path[i+1]}");
+            }
+            
+            return totalSum;
+        }
+
+        private int GetSumOfTwoEdges(string firstName, string secondName)
+        {
+            var firstVertex = _graph.FindVertex(firstName);
+
+            foreach (var item in firstVertex.Edges)
+            {
+                if (secondName == item.ConnectedVertex.Name)
+                {
+                    return item.EdgeWeight;
+                }
+            }
+
+            return 0;
+        }
         
         public string FindShortestPath(Vertex startVertex, Vertex finishVertex)
         {
@@ -69,7 +95,7 @@ namespace DeictraGraph.Dijkstra
 
             while (true)
             {
-                var current = FindUnvisitedVertexWithMinSum();
+                VertexInfo current = FindUnvisitedVertexWithMinSum();
                 if (current == null)
                 {
                     break;
@@ -77,7 +103,7 @@ namespace DeictraGraph.Dijkstra
 
                 SetSumToNextVertex(current);
             }
-
+            
             return GetPath(startVertex, finishVertex);
         }
 
@@ -109,7 +135,7 @@ namespace DeictraGraph.Dijkstra
                 endVertex = GetVertexInfo(endVertex).PreviousVertex;
                 path = endVertex.Name + path;
             }
-
+            
             return path;
         }
     }
